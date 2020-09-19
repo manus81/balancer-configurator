@@ -11,19 +11,19 @@ import com.beermingham.meets.application.dto.TemperatureDTO;
 import com.beermingham.meets.application.dto.WeatherDTO;
 import com.beermingham.meets.application.exception.DuplicateEntityException;
 import com.beermingham.meets.application.exception.ValidationException;
-import com.beermingham.meets.domain.repository.IMeetRepository;
-import com.beermingham.meets.domain.service.BeerAmountCalculatorService;
 import com.nicepeople.balancer.configurator.domain.model.Meet;
 import com.nicepeople.balancer.configurator.domain.model.User;
+import com.nicepeople.balancer.configurator.domain.repository.IAccountRepository;
+import com.nicepeople.balancer.configurator.domain.service.BeerAmountCalculatorService;
 
 @Service
 public class MeetService implements IMeetService {
 
-	private IMeetRepository meetRepository;
+	private IAccountRepository meetRepository;
 	private IWeatherService weatherService;
 
 	@Autowired
-	public MeetService(IMeetRepository meetRepository, IWeatherService weatherService) {
+	public MeetService(IAccountRepository meetRepository, IWeatherService weatherService) {
 		this.meetRepository = meetRepository;
 		this.weatherService = weatherService;
 	}

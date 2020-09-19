@@ -6,12 +6,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import com.beermingham.meets.domain.repository.IMeetRepository;
 import com.nicepeople.balancer.configurator.domain.model.Meet;
+import com.nicepeople.balancer.configurator.domain.repository.IAccountRepository;
 
 @Repository
 @Qualifier(value = "meetRepository")
-public class MongoMeetRepository implements IMeetRepository {
+public class MongoMeetRepository implements IAccountRepository {
 
 	private IMongoMeetRepository iMongoMeetRepository;
 

@@ -18,11 +18,11 @@ import com.beermingham.meets.application.dto.TemperatureDTO;
 import com.beermingham.meets.application.exception.DuplicateEntityException;
 import com.beermingham.meets.application.exception.ValidationException;
 import com.beermingham.meets.application.service.IMeetService;
-import com.beermingham.meets.domain.repository.IMeetRepository;
 import com.beermingham.meets.infrastructure.repository.IMongoMeetRepository;
 import com.google.common.collect.Lists;
 import com.nicepeople.balancer.configurator.domain.model.Meet;
 import com.nicepeople.balancer.configurator.domain.model.User;
+import com.nicepeople.balancer.configurator.domain.repository.IAccountRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -32,7 +32,7 @@ public class MeetServiceTest {
 	private IMeetService meetService;
 
 	@Autowired
-	private IMeetRepository meetRepository;
+	private IAccountRepository meetRepository;
 
 	@Autowired
 	private IMongoMeetRepository iMongoMeetRepository;

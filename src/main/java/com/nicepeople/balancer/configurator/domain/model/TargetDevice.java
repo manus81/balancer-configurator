@@ -5,12 +5,12 @@ import java.util.Set;
 
 public class TargetDevice {
 
-	private String device;
+	private final String device;
 	private String pluginVersion;
 	private Double pingTime;
-	private Set<Host> hosts = new HashSet<>();
-	
-	public TargetDevice(String device, String pluginVersion, Double pingTime, Set<Host> hosts) {
+	private final Set<Host> hosts = new HashSet<>();
+
+	public TargetDevice(final String device, final String pluginVersion, final Double pingTime, final Set<Host> hosts) {
 		this.device = device;
 		this.pluginVersion = pluginVersion;
 		this.pingTime = pingTime;
@@ -18,37 +18,37 @@ public class TargetDevice {
 	}
 
 	public String getDevice() {
-		return device;
+		return this.device;
 	}
 
 	public String getPluginVersion() {
-		return pluginVersion;
+		return this.pluginVersion;
 	}
 
-	public void setPluginVersion(String pluginVersion) {
+	public void setPluginVersion(final String pluginVersion) {
 		this.pluginVersion = pluginVersion;
 	}
 
 	public Double getPingTime() {
-		return pingTime;
+		return this.pingTime;
 	}
 
-	public void setPingTime(Double pingTime) {
+	public void setPingTime(final Double pingTime) {
 		// TODO validar que pingTime sea mayor a 0
 		this.pingTime = pingTime;
 	}
 
 	public Set<Host> getHosts() {
 		// TODO devolver inmutable set
-		return hosts;
+		return this.hosts;
 	}
 
-	public void addHosts(Set<Host> hosts) {
+	public void addHosts(final Set<Host> hosts) {
 		// TODO Validar que hosts no sea null
 		this.hosts.addAll(hosts);
 	}
-	
-	public void addHost(Host host) {
+
+	public void addHost(final Host host) {
 		// TODO Validar que host no sea null
 		this.hosts.add(host);
 	}

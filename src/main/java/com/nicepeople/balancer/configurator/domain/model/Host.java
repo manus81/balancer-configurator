@@ -2,23 +2,23 @@ package com.nicepeople.balancer.configurator.domain.model;
 
 public class Host {
 
-	private String endpoint;
+	private final String endpoint;
 	private Double trafficPercent;
 
-	public Host(String endpoint, Double trafficPercent) {
+	public Host(final String endpoint, final Double trafficPercent) {
 		this.endpoint = endpoint;
 		this.setTrafficPercent(trafficPercent);
 	}
 
 	public String getEndpoint() {
-		return endpoint;
-	}
-	
-	public Double getTrafficPercent() {
-		return trafficPercent;
+		return this.endpoint;
 	}
 
-	public void setTrafficPercent(Double trafficPercent) {
+	public Double getTrafficPercent() {
+		return this.trafficPercent;
+	}
+
+	public void setTrafficPercent(final Double trafficPercent) {
 		// TODO validar que trafficPercent este entre 0 y 1
 		this.trafficPercent = trafficPercent;
 	}
