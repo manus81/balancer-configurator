@@ -6,10 +6,12 @@ import com.nicepeople.balancer.configurator.domain.model.Account;
 
 public interface IAccountRepository {
 
-	Account get(String accountCode);
+	Account get(String code);
 
 	List<Account> getAll();
 
 	Account save(Account account);
-	
+
+	void delete(String code);
+
 }
