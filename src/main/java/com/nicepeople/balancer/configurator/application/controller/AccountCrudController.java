@@ -16,55 +16,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nicepeople.balancer.configurator.application.dto.AccountDTO;
+import com.nicepeople.balancer.configurator.application.dto.NewAccountDTO;
 import com.nicepeople.balancer.configurator.application.dto.DeviceDTO;
-import com.nicepeople.balancer.configurator.application.service.IAccountApplicationService;
+import com.nicepeople.balancer.configurator.application.service.IAccountCrudService;
 import com.nicepeople.balancer.configurator.domain.model.Account;
 
 @RestController
-//@RequestMapping(value = "/accounts")
-@RequestMapping(value = "/")
-public class AccountController {
+@RequestMapping(value = "/accounts")
+public class AccountCrudController {
 
-	private final IAccountApplicationService accountApplicationService;
+	private final IAccountCrudService accountCrudService;
 
 	@Autowired
-	public AccountController(final IAccountApplicationService accountApplicationService) {
-		this.accountApplicationService = accountApplicationService;
+	public AccountCrudController(final IAccountCrudService accountCrudService) {
+		this.accountCrudService = accountCrudService;
 	}
 
 	@GetMapping(value = "/{account_code}")
 	public Account getAccount(@PathVariable("account_code") final String accountCode) {
-		return this.accountApplicationService.getAccount(accountCode);
+		return this.accountCrudService.getAccount(accountCode);
 	}
 
 	@GetMapping()
 	public List<Account> getAllAccounts() {
-		return this.accountApplicationService.getAllAccounts();
+		return this.accountCrudService.getAllAccounts();
 	}
 
 	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
-	public void saveAccount(@RequestBody @Valid final AccountDTO accountDTO) {
-		this.accountApplicationService.createAccount(accountDTO);
-	}
-
-	@PutMapping()
-	@ResponseStatus(HttpStatus.OK)
-	public void updateAccount(@RequestBody @Valid final AccountDTO accountDTO) {
-		this.accountApplicationService.createAccount(accountDTO);
+	public void saveAccount(@RequestBody @Valid final NewAccountDTO newAccountDTO) {
+		this.accountCrudService.createAccount(newAccountDTO);
 	}
 
 	@PutMapping(value = "/{account_code}")
 	@ResponseStatus(HttpStatus.OK)
 	public void addTargetDeviceToAccount(@PathVariable("account_code") final String accountCode,
-			@RequestBody @Valid final DeviceDTO targetDeviceDTO) {
-		this.accountApplicationService.addTargetDevice(accountCode, targetDeviceDTO);
+			@RequestBody @Valid final DeviceDTO newDeviceDTO) {
+		this.accountCrudService.addTargetDevice(accountCode, newDeviceDTO);
 	}
 
 	@DeleteMapping(value = "/{account_code}")
 	@ResponseStatus(HttpStatus.OK)
 	public void deleteAccount(@PathVariable("account_code") final String accountCode) {
-		this.accountApplicationService.deleteAccount(accountCode);
+		this.accountCrudService.deleteAccount(accountCode);
 	}
 }

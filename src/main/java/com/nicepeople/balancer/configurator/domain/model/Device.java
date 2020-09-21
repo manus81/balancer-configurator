@@ -1,25 +1,30 @@
 package com.nicepeople.balancer.configurator.domain.model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.util.CollectionUtils;
 
+import com.google.common.collect.Lists;
 import com.nicepeople.balancer.configurator.domain.exception.EmptyException;
 import com.nicepeople.balancer.configurator.domain.exception.InvalidValueException;
 import com.nicepeople.balancer.configurator.domain.exception.NullException;
 
-public class Device {
+public class Device implements Serializable {
 
-	// TODO crear excepciones especificas
+	private static final long serialVersionUID = 4672108567655721863L;
 
-	private final String device;
+	private String device;
 	private String pluginVersion;
-	private Double pingTime;
-	private final Set<Host> hosts = new HashSet<>();
+	private int pingTime;
+	private Set<Host> hosts = new HashSet<>();
+	private List<Host> balancedHosts = Lists.newArrayListWithCapacity(100);
 
-	public Device(final String device, final String pluginVersion, final Double pingTime, final Set<Host> hosts) {
+	public Device(final String device, final String pluginVersion, final int pingTime, final Set<Host> hosts) {
 		this.device = device;
 		this.pluginVersion = pluginVersion;
 		this.pingTime = pingTime;
@@ -38,12 +43,12 @@ public class Device {
 		this.pluginVersion = pluginVersion;
 	}
 
-	public Double getPingTime() {
+	public int getPingTime() {
 		return this.pingTime;
 	}
 
-	public void setPingTime(final Double pingTime) {
-		if (pingTime == null || !(pingTime > 0)) {
+	public void setPingTime(final int pingTime) {
+		if (pingTime < 1) {
 			throw new InvalidValueException("Invalid pingTime");
 		}
 
@@ -80,7 +85,7 @@ public class Device {
 
 	public void validateDevice() {
 		this.validateHosts();
-		// TODO extra validations
+		this.fillBalancedHosts();
 	}
 
 	private void validateHosts() {
@@ -88,11 +93,33 @@ public class Device {
 			throw new EmptyException("Hosts cant be empty");
 		}
 
-		final Double hostPercentages = this.hosts.stream().peek(Host::validateHost).map(Host::getTrafficPercent)
+		final int hostPercentages = this.hosts.stream().peek(Host::validateHost).map(Host::getTrafficPercent)
 				.reduce((a, b) -> a + b).get();
-		if (Double.compare(1D, hostPercentages) != 0) {
-			throw new InvalidValueException("Hosts percentages from device must totalize 1 (100%)");
+		if (hostPercentages != 100) {
+			throw new InvalidValueException("Hosts percentages from device must totalize 100");
 		}
+	}
+
+	private void fillBalancedHosts() {
+		this.balancedHosts.clear();
+		this.hosts.forEach(h -> {
+			for (int i = 0; i < h.getTrafficPercent(); i++) {
+				this.balancedHosts.add(h);
+			}
+		});
+	}
+
+	/**
+	 * @return a host according to their percentages
+	 */
+	public Host balance() {
+		// this.validateHosts();
+		if (this.balancedHosts.isEmpty()) {
+			this.fillBalancedHosts();
+		}
+
+		final int randomIndex = RandomUtils.nextInt(0, 99);
+		return this.balancedHosts.get(randomIndex);
 	}
 
 	@Override
@@ -119,4 +146,23 @@ public class Device {
 			return false;
 		return true;
 	}
+
+	/*** >>> ***/
+	// TODO Crear excepciones especificas cara cada tipo de error
+
+	// TODO Codigo para eliminar (solo para generar DB con data inicial)
+	@SuppressWarnings("unused")
+	private Device() {
+	}
+
+	@SuppressWarnings("unused")
+	private void setHosts(final Set<Host> hosts) {
+		this.hosts = hosts;
+	}
+
+	@SuppressWarnings("unused")
+	private void setBalancedHosts(final List<Host> balancedHosts) {
+		this.balancedHosts = balancedHosts;
+	}
+	/*** <<< ***/
 }

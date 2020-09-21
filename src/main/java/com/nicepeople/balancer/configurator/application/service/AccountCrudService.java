@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nicepeople.balancer.configurator.application.dto.AccountDTO;
 import com.nicepeople.balancer.configurator.application.dto.DeviceDTO;
 import com.nicepeople.balancer.configurator.application.dto.HostDTO;
+import com.nicepeople.balancer.configurator.application.dto.NewAccountDTO;
 import com.nicepeople.balancer.configurator.application.exception.AccountNotFoundException;
 import com.nicepeople.balancer.configurator.application.util.AccountMapper;
 import com.nicepeople.balancer.configurator.application.util.DeviceMapper;
@@ -16,17 +16,17 @@ import com.nicepeople.balancer.configurator.domain.model.Account;
 import com.nicepeople.balancer.configurator.domain.service.IAccountService;
 
 @Service
-public class AccountApplicationService implements IAccountApplicationService {
+public class AccountCrudService implements IAccountCrudService {
 
 	private final IAccountService accountService;
 
 	@Autowired
-	public AccountApplicationService(final IAccountService accountService) {
+	public AccountCrudService(final IAccountService accountService) {
 		this.accountService = accountService;
 	}
 
 	@Override
-	public void createAccount(final AccountDTO accountDTO) {
+	public void createAccount(final NewAccountDTO accountDTO) {
 		final Account account = AccountMapper.toAccount(accountDTO);
 		this.accountService.createAccount(account);
 	}
@@ -54,7 +54,7 @@ public class AccountApplicationService implements IAccountApplicationService {
 			throw new AccountNotFoundException(accountCode);
 		}
 
-		account.addTargetDevice(DeviceMapper.toDevice(targetDeviceDTO));
+		account.addDevice(DeviceMapper.toDevice(targetDeviceDTO));
 		this.accountService.updateAccount(account);
 	}
 

@@ -1,5 +1,6 @@
 package com.nicepeople.balancer.configurator.domain.model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -14,74 +15,71 @@ import com.nicepeople.balancer.configurator.domain.exception.InvalidValueExcepti
 import com.nicepeople.balancer.configurator.domain.exception.NotFoundException;
 import com.nicepeople.balancer.configurator.domain.exception.NullException;
 
-public class Account {
+public class Account implements Serializable {
 
-	// TODO mejorar nombres (targetDevices?)
-	// TODO crear excepciones especificas
+	private static final long serialVersionUID = 2347210856765572189L;
 
 	@Id
-	private final String code;
-	private final Set<Device> targetDevices = new HashSet<>();
+	private String code;
+	private Set<Device> devices = new HashSet<>();
 
-	public Account(final String code, final Set<Device> targetDevices) {
+	public Account(final String code, final Set<Device> devices) {
 		if (Strings.isNullOrEmpty(code)) {
 			throw new InvalidValueException("Endpoint cant be empty");
 		}
 
 		this.code = code;
-		this.addTargetDevices(targetDevices);
+		this.addDevices(devices);
 	}
 
 	public String getCode() {
 		return this.code;
 	}
 
-	public Set<Device> getTargetDevices() {
-		return Collections.unmodifiableSet(this.targetDevices);
+	public Set<Device> getDevices() {
+		return Collections.unmodifiableSet(this.devices);
 	}
 
-	public void addTargetDevices(final Set<Device> targetDevices) {
-		if (CollectionUtils.isEmpty(targetDevices)) {
+	public void addDevices(final Set<Device> devices) {
+		if (CollectionUtils.isEmpty(devices)) {
 			throw new EmptyException("Target devices cant be empty");
 		}
 
-		this.targetDevices.addAll(targetDevices);
+		this.devices.addAll(devices);
 	}
 
-	public void addTargetDevice(final Device targetDevice) {
-		if (targetDevice == null) {
+	public void addDevice(final Device device) {
+		if (device == null) {
 			throw new NullException("Target device cant be null");
 		}
 
-		this.targetDevices.add(targetDevice);
+		this.devices.add(device);
 	}
 
-	public void addHostToDevice(final String targetDevice, final Host host) {
-		final Optional<Device> device = this.targetDevices.stream().filter(d -> d.getDevice().equals(targetDevice))
-				.findAny();
+	public void addHostToDevice(final String device, final Host host) {
+		final Optional<Device> oDevice = this.devices.stream().filter(d -> d.getDevice().equals(device)).findAny();
 
-		if (device.isEmpty()) {
+		if (oDevice.isEmpty()) {
 			throw new NotFoundException("Target device not exist in this account");
 		}
 
-		device.get().addHost(host);
+		oDevice.get().addHost(host);
 	}
 
-	public void removeTargetDevice(final Device targetDevice) {
-		if (targetDevice == null) {
+	public void removeDevice(final Device device) {
+		if (device == null) {
 			throw new NullException("Target device cant be null");
 		}
 
-		this.targetDevices.remove(targetDevice);
+		this.devices.remove(device);
 	}
 
 	public void validateAccount() {
-		if (CollectionUtils.isEmpty(this.targetDevices)) {
+		if (CollectionUtils.isEmpty(this.devices)) {
 			throw new NullException("Target devices cant be empty");
 		}
 
-		this.targetDevices.forEach(Device::validateDevice);
-		// TODO extra validations
+		this.devices.forEach(Device::validateDevice);
 	}
 
 	@Override
@@ -108,4 +106,18 @@ public class Account {
 			return false;
 		return true;
 	}
+
+	/*** >>> ***/
+	// TODO Crear excepciones especificas cara cada tipo de error
+
+	// TODO Codigo para eliminar (solo para generar DB con data inicial)
+	@SuppressWarnings("unused")
+	private Account() {
+	}
+
+	@SuppressWarnings("unused")
+	private void setDevices(final Set<Device> devices) {
+		this.devices = devices;
+	}
+	/*** <<< ***/
 }

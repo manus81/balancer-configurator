@@ -6,15 +6,9 @@ import com.nicepeople.balancer.configurator.domain.model.Host;
 
 public final class HostMapper {
 
-	// TODO usar alguna lib mapper
-
-	private HostMapper() {
-		// no instanciable (all compatible)
-	}
-
 	public static Host toHost(final HostDTO dto) {
 		try {
-			return new Host(dto.endpoint, Double.valueOf(dto.trafficPercent));
+			return new Host(dto.endpoint, dto.traffic_percent);
 		} catch (final Exception e) {
 			throw new HostMapperException(e.getMessage());
 		}

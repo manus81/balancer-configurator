@@ -1,0 +1,55 @@
+[
+  {
+    "_class": "com.nicepeople.balancer.configurator.domain.model.Account",
+    "code": "clienteA",
+    "devices": [
+      {
+        "device": "XBox",
+        "hosts": [
+          {
+            "endpoint": "clusterA.com",
+            "trafficPercent": 70
+          },
+          {
+            "endpoint": "clusterB.com",
+            "trafficPercent": 30
+          }
+        ],
+        "pingTime": 10,
+        "pluginVersion": "3.3.1"
+      },
+      {
+        "device": "Panasonic",
+        "hosts": [
+          {
+            "endpoint": "clusterB.com",
+            "trafficPercent": 100
+          }
+        ],
+        "pingTime": 5,
+        "pluginVersion": "3.3.2"
+      }
+    ]
+  },
+  {
+    "_class": "com.nicepeople.balancer.configurator.domain.model.Account",
+    "code": "clienteB",
+    "devices": [
+      {
+        "device": "osmf",
+        "hosts": [
+          {
+            "endpoint": "clusterA.com",
+            "trafficPercent": 50
+          },
+          {
+            "endpoint": "clusterB.com",
+            "trafficPercent": 50
+          }
+        ],
+        "pingTime": 5,
+        "pluginVersion": "3.3.1"
+      }
+    ]
+  }
+]

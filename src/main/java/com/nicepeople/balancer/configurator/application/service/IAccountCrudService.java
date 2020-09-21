@@ -2,14 +2,14 @@ package com.nicepeople.balancer.configurator.application.service;
 
 import java.util.List;
 
-import com.nicepeople.balancer.configurator.application.dto.AccountDTO;
-import com.nicepeople.balancer.configurator.application.dto.DeviceDTO;
 import com.nicepeople.balancer.configurator.application.dto.HostDTO;
+import com.nicepeople.balancer.configurator.application.dto.NewAccountDTO;
+import com.nicepeople.balancer.configurator.application.dto.DeviceDTO;
 import com.nicepeople.balancer.configurator.domain.model.Account;
 
-public interface IAccountApplicationService {
+public interface IAccountCrudService {
 
-	public void createAccount(final AccountDTO accountDTO);
+	public void createAccount(final NewAccountDTO accountDTO);
 
 	public Account getAccount(String accountCode);
 

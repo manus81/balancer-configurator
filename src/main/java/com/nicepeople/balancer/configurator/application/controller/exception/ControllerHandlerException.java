@@ -28,7 +28,7 @@ public class ControllerHandlerException {
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	// TODO especificar mas las exepciones
+	// TODO especificar jerarquias ApplicationException DomainException
 	@ExceptionHandler({ ApplicationException.class, DomainException.class })
 	public ResponseEntity<HttpErrorResponse> handleConflictException(final Exception exception) {
 		LOGGER.error(exception.getMessage(), exception);
