@@ -1,6 +1,7 @@
 package com.nicepeople.balancer.configurator.application.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,19 @@ public class AccountDataService implements IAccountDataService {
 	}
 
 	@Override
-	public Optional<AccountDataDTO> getAccountData(final String accountCode, final String targetDevice,
+	public AccountDataDTO getAccountData(final String accountCode, final String targetDevice,
 			final String pluginVersion) {
 
 		final Optional<Device> device = this.accountService.findAccountDevice(accountCode, targetDevice, pluginVersion);
 
-		return device.isPresent()
-				? Optional.of(new AccountDataDTO(device.get().balance().getEndpoint(), device.get().getPingTime()))
-				: Optional.empty();
+		return device.map(d -> {
+			final AccountDataDTO data = new AccountDataDTO(device.get().balance().getEndpoint(),
+					device.get().getPingTime());
+
+			// unique view code
+			data.setViewCode(UUID.randomUUID().toString());
+
+			return data;
+		}).orElse(null);
 	}
 }

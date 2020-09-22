@@ -14,6 +14,7 @@ import com.nicepeople.balancer.configurator.domain.model.Account;
 import com.nicepeople.balancer.configurator.domain.model.Device;
 import com.nicepeople.balancer.configurator.domain.repository.IAccountRepository;
 
+// TODO retornar Optional's
 @Service
 public class AccountService implements IAccountService {
 

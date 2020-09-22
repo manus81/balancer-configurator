@@ -1,8 +1,5 @@
 package com.nicepeople.balancer.configurator.application.controller;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,13 +34,6 @@ public class AccountDataController {
 			@RequestParam("target_device") final String targetDevice,
 			@RequestParam("plugin_version") final String pluginVersion) {
 
-		final Optional<AccountDataDTO> accountData = this.accountDataService.getAccountData(accountCode, targetDevice,
-				pluginVersion);
-
-		accountData.ifPresent(data -> {
-			accountData.get().setViewCode(UUID.randomUUID().toString());
-		});
-
-		return accountData.orElse(null);
+		return this.accountDataService.getAccountData(accountCode, targetDevice, pluginVersion);
 	}
 }

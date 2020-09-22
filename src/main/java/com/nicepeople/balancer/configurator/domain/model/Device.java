@@ -18,6 +18,7 @@ public class Device implements Serializable {
 
 	private static final long serialVersionUID = 4672108567655721863L;
 
+	// TODO cambiar device por name
 	private String device;
 	private String pluginVersion;
 	private int pingTime;

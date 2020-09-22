@@ -14,8 +14,8 @@ public class MongoAccountRepository implements IAccountRepository {
 
 	private final IMongoAccountRepository iMongoAccountRepository;
 
-	public MongoAccountRepository(final IMongoAccountRepository iMongoMeetRepository) {
-		this.iMongoAccountRepository = iMongoMeetRepository;
+	public MongoAccountRepository(final IMongoAccountRepository iMongoAccountRepository) {
+		this.iMongoAccountRepository = iMongoAccountRepository;
 	}
 
 	@Override
