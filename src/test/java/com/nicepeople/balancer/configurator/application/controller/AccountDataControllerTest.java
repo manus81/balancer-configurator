@@ -1,84 +1,53 @@
 package com.nicepeople.balancer.configurator.application.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-
-import org.junit.Before;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import com.nicepeople.balancer.configurator.application.dto.AccountDataDTO;
-import com.nicepeople.balancer.configurator.application.service.IAccountDataService;
-import com.nicepeople.balancer.configurator.domain.model.Account;
-import com.nicepeople.balancer.configurator.domain.model.Device;
-import com.nicepeople.balancer.configurator.domain.model.Host;
-import com.nicepeople.balancer.configurator.domain.repository.IAccountRepository;
+import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 class AccountDataControllerTest {
 
 	@Autowired
-	IAccountRepository accountRepository;
+	protected MockMvc mockMvc;
 
-	@Autowired
-	IAccountDataService accountDataService;
-
-	private Account account;
-	private Device device;
-
-	@Before
-	void accountRepository() {
-
-		final List<Account> allAccounts = this.accountRepository.getAll();
-		assertNotNull(allAccounts);
-		assertEquals(allAccounts.size(), 2);
-
-		this.account = this.accountRepository.get("clienteA");
-		assertNotNull(this.account);
-		assertEquals(this.account.getCode(), "clienteA");
-		assertNotNull(this.account.getDevices());
-		assertEquals(this.account.getDevices().size(), 2);
-
-		this.device = this.account.getDevices().iterator().next();
-		assertNotNull(this.device);
+	@Test
+	void emptyResponse() {
+		try {
+			this.mockMvc.perform(
+					get("/getData").param("accountCode", "a").param("pluginVersion", "1").param("targetDevice", "x"))
+					.andExpect(status().isOk()).andExpect(content().string(StringUtils.EMPTY));
+		} catch (final Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
-	void accountDataService() {
-
-		// No retorna info para estos inputs
-		final AccountDataDTO data1 = this.accountDataService.getAccountData(this.account.getCode(), "DeviceNonExist",
-				this.device.getPluginVersion());
-		assertNull(data1);
-
-		// Retorna info para estos inputs
-		final AccountDataDTO data2 = this.accountDataService.getAccountData(this.account.getCode(),
-				this.device.getDevice(), this.device.getPluginVersion());
-		assertNotNull(data2);
-		assertEquals(data2.getPing(), this.device.getPingTime());
-
-		// Retorna info para los mismos inputs, pero el codigo debe ser distinto
-		final AccountDataDTO data2_clone = this.accountDataService.getAccountData(this.account.getCode(),
-				this.device.getDevice(), this.device.getPluginVersion());
-		assertNotNull(data2_clone);
-		assertEquals(data2_clone.getPing(), this.device.getPingTime());
-		assertNotEquals(data2.getViewCode(), data2_clone.getViewCode());
-	}
-
-	@Test
-	void clusterBalance() {
-		final Host balancedHost = this.device.balance();
-		assertNotNull(balancedHost);
-		assertTrue(balancedHost.getTrafficPercent() >= 0);
-		assertTrue(balancedHost.getTrafficPercent() <= 100);
+	void dataResponse() {
+		try {
+			this.mockMvc
+					.perform(get("/getData").param("accountCode", "clienteA").param("pluginVersion", "3.3.2")
+							.param("targetDevice", "Panasonic"))
+					.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_XML))
+					.andExpect(content().string(containsString("clusterB")));
+		} catch (final Exception e) {
+			fail(e.getMessage());
+		}
 	}
 }
